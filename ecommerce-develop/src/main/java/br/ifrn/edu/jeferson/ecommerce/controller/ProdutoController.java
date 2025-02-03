@@ -5,7 +5,6 @@ import br.ifrn.edu.jeferson.ecommerce.domain.dtos.ProdutoResponseDTO;
 import br.ifrn.edu.jeferson.ecommerce.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,8 +16,13 @@ import java.util.List;
 @RequestMapping("/api/produtos")
 @Tag(name = "Produtos", description = "API de gerenciamento de produtos dos Produtos")
 public class ProdutoController {
-    @Autowired
-    private ProdutoService produtoService;
+    
+    private final ProdutoService produtoService;
+
+    // Injeção via construtor
+    public ProdutoController(ProdutoService produtoService) {
+        this.produtoService = produtoService;
+    }
 
     @Operation(summary = "Criar um novo produto")
     @PostMapping

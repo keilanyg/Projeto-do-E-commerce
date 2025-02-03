@@ -11,16 +11,17 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "DTO para requisição de endereço")
+@Schema(description = "DTO para requisição de cliente")
 public class ClienteRequestDTO {
 
-    @Schema(description = "Nome da Rua", example = "Maria")
+    @Schema(description = "Nome do Cliente", example = "Maria")
     @NotBlank(message = "Obrigatório")
     private String nome;
 
     @Schema(example = "maria@gmail.com")
     @NotBlank(message = "Obrigatório")
     @Size(max = 99, message = "Email deve possuir até 100 caracteres")
+    @Email(message = "Email deve ser válido")
     private String email;
 
     @Schema(example = "123.456.789-10")

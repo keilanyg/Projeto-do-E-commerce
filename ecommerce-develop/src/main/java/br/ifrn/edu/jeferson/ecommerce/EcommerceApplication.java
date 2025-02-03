@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EcommerceApplication {
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private CategoriaRepository categoriaRepository ;
 
     public static void main(String[] args) {
         SpringApplication.run(EcommerceApplication.class, args);

@@ -7,51 +7,53 @@ import br.ifrn.edu.jeferson.ecommerce.exception.BusinessException;
 import br.ifrn.edu.jeferson.ecommerce.exception.ResourceNotFoundException;
 import br.ifrn.edu.jeferson.ecommerce.mapper.CategoriaMapper;
 import br.ifrn.edu.jeferson.ecommerce.repository.CategoriaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Service
+
 public class CategoriaService {
-    @Autowired
-    private CategoriaRepository categoriaRepository;
 
-    @Autowired
-    private CategoriaMapper mapper;
+    private final CategoriaRepository categoriaRepository;
+    private final CategoriaMapper categoriaMapper;
 
-    @Autowired
-    private CategoriaMapper categoriaMapper;
+    public CategoriaService(CategoriaRepository categoriaRepository, CategoriaMapper categoriaMapper) {
+        this.categoriaRepository = categoriaRepository;
+        this.categoriaMapper = categoriaMapper;
+    }
 
     public CategoriaResponseDTO salvar(CategoriaRequestDTO categoriaDto) {
-        var categoria =  mapper.toEntity(categoriaDto);
+        var categoria = categoriaMapper.toEntity(categoriaDto);
 
         if (categoriaRepository.existsByNome(categoria.getNome())) {
             throw new BusinessException("Já existe uma categoria com esse nome");
         }
 
         categoriaRepository.save(categoria);
-        return mapper.toResponseDTO(categoria);
+        return categoriaMapper.toResponseDTO(categoria);
     }
 
-    public List<CategoriaResponseDTO> lista(){
+    public List<CategoriaResponseDTO> lista() {
         List<Categoria> categorias = categoriaRepository.findAll();
-        return mapper.toDTOList (categorias);
+        return categoriaMapper.toDTOList(categorias);
     }
 
     public void deletar(Long id) {
         if (!categoriaRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Categoria não encontrada");
+            throw new ResourceNotFoundException("Categoria não foi encontrada");
         }
         categoriaRepository.deleteById(id);
     }
 
     public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO categoriaDto) {
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Categoria não encontrada"));
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
 
-        if (!categoria.getNome().equals(categoriaDto.getNome()) && categoriaRepository.existsByNome( categoriaDto.getNome()) ) {
-            throw  new BusinessException("Já existe uma categoria com esse nome");
+        if (!categoria.getNome().equals(categoriaDto.getNome())
+                && categoriaRepository.existsByNome(categoriaDto.getNome())) {
+            throw new BusinessException("Já existe uma categoria com esse nome");
         }
 
         categoriaMapper.updateEntityFromDTO(categoriaDto, categoria);
@@ -61,7 +63,8 @@ public class CategoriaService {
     }
 
     public CategoriaResponseDTO buscarPorId(Long id) {
-        Categoria categoria = categoriaRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Categoria não encontrada"));
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Categoria não encontrada"));
         return categoriaMapper.toResponseDTO(categoria);
     }
 }

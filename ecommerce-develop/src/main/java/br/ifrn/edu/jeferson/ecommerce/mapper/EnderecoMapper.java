@@ -1,29 +1,25 @@
 package br.ifrn.edu.jeferson.ecommerce.mapper;
 
-import br.ifrn.edu.jeferson.ecommerce.domain.Endereco;
-import br.ifrn.edu.jeferson.ecommerce.domain.dtos.EnderecoRequestDTO;
-import br.ifrn.edu.jeferson.ecommerce.domain.dtos.EnderecoResponseDTO;
-import org.mapstruct.*;
+import br.ifrn.edu.jeferson.ecommerce.domain.Pedido;
+import br.ifrn.edu.jeferson.ecommerce.domain.dtos.PedidoResponseDTO;
 
-import java.util.List;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.data.domain.Page;
 
-@Mapper(componentModel = "spring")
+
+@Mapper(
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = {ItemPedidoMapper.class}
+)
 public interface EnderecoMapper {
+    @Mapping(target = "clienteId", source = "cliente.id")
+    PedidoResponseDTO toResponseDTO(Pedido pedido);
 
-    EnderecoResponseDTO toResponseDTO(Endereco endereco);
-
-    // Converter DTO para Endereco
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cliente", ignore = true)
-    Endereco toEntity(EnderecoRequestDTO dto);
-
-    List<EnderecoResponseDTO> toDTOList(List<Endereco> enderecos);
-    default Page<EnderecoResponseDTO> toPageDTO(Page<Endereco> enderecos) {
-        return enderecos.map(this::toResponseDTO);
+    default Page<PedidoResponseDTO> toPageDTO(Page<Pedido> pedidos) {
+        return pedidos.map(this::toResponseDTO);
     }
-
-    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "cliente", ignore = true)
-    void updateEntityFromDTO(EnderecoRequestDTO dto, @MappingTarget Endereco endereco);
 }

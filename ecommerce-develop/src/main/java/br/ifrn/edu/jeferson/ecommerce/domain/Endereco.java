@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
 
-
 @Entity
 @Setter
 @Getter
@@ -16,6 +15,9 @@ public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String nome;  // Novo atributo nome
 
     @Column(nullable = false)
     private String rua;
@@ -35,7 +37,6 @@ public class Endereco {
     @Column(nullable = false)
     private String cep;
 
-    @OneToOne(cascade = CascadeType.REFRESH)
-    @JoinColumn(name = "cliente_id", nullable = false)
+    @Column(nullable = false)
     private Cliente cliente;
 }

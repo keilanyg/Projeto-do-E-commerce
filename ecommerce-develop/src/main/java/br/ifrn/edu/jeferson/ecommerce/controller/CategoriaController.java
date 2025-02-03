@@ -5,7 +5,6 @@ import br.ifrn.edu.jeferson.ecommerce.domain.dtos.CategoriaResponseDTO;
 import br.ifrn.edu.jeferson.ecommerce.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -17,8 +16,13 @@ import java.util.List;
 @RequestMapping("/api/categorias")
 @Tag(name = "Categorias", description = "API de gerenciamento de categorias dos Produtos")
 public class CategoriaController {
-    @Autowired
-    private CategoriaService categoriaService;
+
+    private final CategoriaService categoriaService;
+
+    // Injeção via construtor
+    public CategoriaController(CategoriaService categoriaService) {
+        this.categoriaService = categoriaService;
+    }
 
     @Operation(summary = "Criar uma nova categoria")
     @PostMapping
@@ -26,7 +30,7 @@ public class CategoriaController {
         return ResponseEntity.ok(categoriaService.salvar(categoriaDto));
     }
 
-    @Operation(summary = "Listar todas as categoria")
+    @Operation(summary = "Listar todas as categorias")
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<CategoriaResponseDTO>> listar() {
@@ -45,5 +49,4 @@ public class CategoriaController {
     public ResponseEntity<CategoriaResponseDTO> atualizar(@PathVariable Long id, @RequestBody CategoriaRequestDTO categoriaDto) {
         return ResponseEntity.ok(categoriaService.atualizar(id, categoriaDto));
     }
-
 }

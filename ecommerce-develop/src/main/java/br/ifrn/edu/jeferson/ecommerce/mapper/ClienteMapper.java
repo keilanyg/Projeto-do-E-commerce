@@ -4,6 +4,7 @@ import br.ifrn.edu.jeferson.ecommerce.domain.Cliente;
 import br.ifrn.edu.jeferson.ecommerce.domain.dtos.ClienteRequestDTO;
 import br.ifrn.edu.jeferson.ecommerce.domain.dtos.ClienteResponseDTO;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 

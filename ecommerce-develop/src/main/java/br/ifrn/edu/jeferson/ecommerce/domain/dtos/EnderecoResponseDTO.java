@@ -8,26 +8,27 @@ import lombok.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "DTO para resposta de Endereco")
+@Schema(description = "DTO para resposta de Endereço")
 public class EnderecoResponseDTO {
-    @Schema(description = "ID do endereco", example = "1")
+
+    @Schema(description = "ID do endereço", example = "1") // Corrigido "endereco" para "endereço"
     private Long id;
 
-    @Schema(description = "Nome da rua",example = "Rua Antônio")
+    @Schema(description = "Nome da rua", example = "Rua Antônio")
     private String rua;
 
-    @Schema(description = "Numero",example = "87")
+    @Schema(description = "Número", example = "87")
     private String numero;
 
-    @Schema(description = "Bairro",example = "Centro")
+    @Schema(description = "Bairro", example = "Centro")
     private String bairro;
 
-    @Schema(description = "Cidade",example = "Campina Grande")
+    @Schema(description = "Cidade", example = "Campina Grande")
     private String cidade;
 
-    @Schema(description = "Estado",example = "Paraiba")
+    @Schema(description = "Estado", example = "Paraíba") // Corrigido para acentuar "Paraíba"
     private String estado;
 
-    @Schema(description = "CEP",example = "10000-000")
+    @Schema(description = "CEP", example = "10000-000")
     private String cep;
 }

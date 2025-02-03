@@ -1,6 +1,9 @@
 package br.ifrn.edu.jeferson.ecommerce.domain.dtos;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,6 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @NoArgsConstructor
 @Schema(description = "DTO que representa um pedido")
 public class PedidoResponseDTO {
+
     @Schema(example = "1")
     private Long id;
 
@@ -23,7 +27,7 @@ public class PedidoResponseDTO {
     @Schema(example = "79.90")
     private BigDecimal valorTotal;
 
-    @Schema(example = "Análisando")
+    @Schema(example = "Analisando")
     private StatusPedido statusPedido;
 
     @Schema(example = "15")

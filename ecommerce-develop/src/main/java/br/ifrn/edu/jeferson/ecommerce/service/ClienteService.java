@@ -7,61 +7,73 @@ import br.ifrn.edu.jeferson.ecommerce.exception.BusinessException;
 import br.ifrn.edu.jeferson.ecommerce.exception.ResourceNotFoundException;
 import br.ifrn.edu.jeferson.ecommerce.mapper.ClienteMapper;
 import br.ifrn.edu.jeferson.ecommerce.repository.ClienteRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ClienteService {
-    @Autowired
-    private ClienteRepository clienteRepository;
 
-    @Autowired
-    private ClienteMapper mapper;
+    private final ClienteRepository clienteRepository;
+    private final ClienteMapper clienteMapper;
 
-    @Autowired
-    private ClienteMapper clienteMapper;
+    // Construtor para injeção de dependências
+    public ClienteService(ClienteRepository clienteRepository, ClienteMapper clienteMapper) {
+        this.clienteRepository = clienteRepository;
+        this.clienteMapper = clienteMapper;
+    }
 
     public ClienteResponseDTO salvar(ClienteRequestDTO clienteDto) {
-        var cliente =  mapper.toEntity(clienteDto);
+        var cliente = clienteMapper.toEntity(clienteDto);
 
+        // Verificar se já existe um cliente com o mesmo nome
         if (clienteRepository.existsByNome(cliente.getNome())) {
             throw new BusinessException("Já existe um cliente com esse nome");
         }
 
+        // Verificar se já existe um cliente com o mesmo CPF
+        if (clienteRepository.existsByCpf(cliente.getCpf())) {
+            throw new BusinessException("Já existe um cliente com esse CPF");
+        }
+
         clienteRepository.save(cliente);
-        return mapper.toResponseDTO(cliente);
+        return clienteMapper.toResponseDTO(cliente);
     }
 
-    public List<ClienteResponseDTO> lista(){
+    public List<ClienteResponseDTO> lista() {
         List<Cliente> clientes = clienteRepository.findAll();
-        return mapper.toDTOList (clientes);
+        return clienteMapper.toDTOList(clientes);
     }
 
     public void deletar(Long id) {
         if (!clienteRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Cliente não encontrado");
+            throw new ResourceNotFoundException("Cliente não foi encontrado");
         }
         clienteRepository.deleteById(id);
     }
 
     public ClienteResponseDTO atualizar(Long id, ClienteRequestDTO clienteDto) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Cliente não encontrada"));
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
 
-        if (!cliente.getNome().equals(clienteDto.getNome()) && clienteRepository.existsByNome( clienteDto.getNome()) ) {
-            throw  new BusinessException("Já existe um cliente com esse nome");
+        // Verificar se já existe um cliente com o nome informado
+        if (!cliente.getNome().equals(clienteDto.getNome()) && clienteRepository.existsByNome(clienteDto.getNome())) {
+            throw new BusinessException("Já existe um cliente com esse nome");
         }
 
-        clienteMapper.updateEntityFromDTO(clienteDto, cliente);
-        var clienteAlterada = clienteRepository.save(cliente);
+        // Verificar se o CPF também está sendo alterado e se já existe
+        if (!cliente.getCpf().equals(clienteDto.getCpf()) && clienteRepository.existsByCpf(clienteDto.getCpf())) {
+            throw new BusinessException("Já existe um cliente com esse CPF");
+        }
 
-        return clienteMapper.toResponseDTO(clienteAlterada);
+        // Atualizar a entidade cliente com as informações do DTO
+        clienteMapper.updateEntityFromDTO(clienteDto, cliente);
+        var clienteAlterado = clienteRepository.save(cliente);
+
+        return clienteMapper.toResponseDTO(clienteAlterado);
     }
 
     public ClienteResponseDTO buscarPorId(Long id) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Cliente não encontrada"));
+        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado"));
         return clienteMapper.toResponseDTO(cliente);
     }
 }
